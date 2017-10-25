@@ -8,17 +8,23 @@ namespace PaddleGame
 {
     public class GameSet
     {
+        private int[] _scoreBoard;
+
+        private bool[] _advsDeuce;
+
         public SetName Name { get; set; }
 
-        private int[] _scoreBoard;
-        private bool[] _advsDeuce;
-        
         public PaddlePlayer Winner { get; private set; }
 
         public StatusName ScoreStatus { get; set; }
 
         private string GameID { get; set; }
 
+        /// <summary>
+        /// Creates a gameset for given gamefield
+        /// </summary>
+        /// <param name="pCurrent">Set name to identify</param>
+        /// <param name="pGameID">Game ID in the tournament</param>
         public GameSet(SetName pCurrent, string pGameID)
         {
             Name = pCurrent;
@@ -33,11 +39,22 @@ namespace PaddleGame
             Winner = null;
         }
 
+        /// <summary>
+        /// Creates a gameset and change status for given gamefield
+        /// </summary>
+        /// <param name="pCurrent">Set name to identify</param>
+        /// <param name="pGameID">Game ID in the tournament</param>
+        /// <param name="pStatus">Status of the gameset</param>
         public GameSet(SetName pCurrent, string pGameID, StatusName pStatus) : this(pCurrent, pGameID)
         {
             ScoreStatus = pStatus;
         }
 
+        /// <summary>
+        /// Action of score for the actual set
+        /// </summary>
+        /// <param name="pPlayer">Player who scores in the game</param>
+        /// <returns>Score is succesfully set</returns>
         public bool Score(PaddlePlayer pPlayer)
         {
             //Get the actual game involved for this set
@@ -67,16 +84,22 @@ namespace PaddleGame
                             ScoreStatus = StatusName.Finished;
 
                             Winner = game.Players[pos];
+
+                            return true;
                         }
                         else if (_scoreBoard[pos] == rival && _advsDeuce.All(a => a == false))
                         {
                             ScoreStatus = StatusName.Deuce;
 
                             _advsDeuce[pos] = true;
+
+                            return true;
                         }
-                        else if (_advsDeuce.Any(a => a == true))
+                        else if (ScoreStatus == StatusName.Deuce)
                         {
                             _advsDeuce = new bool[] { false, false };
+
+                            return true;
                         }
                     }
                     else
@@ -99,6 +122,11 @@ namespace PaddleGame
             return false;
         }
 
+        /// <summary>
+        /// Get the current score of the set
+        /// </summary>
+        /// <param name="pPlayer">Player to access to the scoreboard</param>
+        /// <returns>Current score of the set</returns>
         public int GetScore(PaddlePlayer pPlayer)
         {
             //Get the actual game involved for this set

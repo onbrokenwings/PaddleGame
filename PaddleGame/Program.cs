@@ -9,7 +9,7 @@ namespace PaddleGame
     class Program
     {
         //***********************************************
-        //Game Requierements:
+        //Game Requirements:
         //***********************************************
 
         //Several matches can be play at a time.
@@ -41,13 +41,25 @@ namespace PaddleGame
 
             var game2Guid = Tournament.Instance.StartGame(player1, player3);
 
-            Tournament.Instance.SetScore(player1, game2Guid);
+            //Game 2 exemplifies the deuce case
 
             Tournament.Instance.SetScore(player1, game2Guid);
 
             Tournament.Instance.SetScore(player1, game2Guid);
 
             Tournament.Instance.SetScore(player1, game2Guid);
+
+            Tournament.Instance.SetScore(player3, game2Guid);
+
+            Tournament.Instance.SetScore(player3, game2Guid);
+
+            Tournament.Instance.SetScore(player3, game2Guid);
+
+            Tournament.Instance.SetScore(player3, game2Guid);
+
+            Tournament.Instance.SetScore(player1, game2Guid);
+
+            Tournament.Instance.SetScore(player3, game2Guid);
 
             Tournament.Instance.SetScore(player3, game2Guid);
 

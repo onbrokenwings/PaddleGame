@@ -20,3 +20,7 @@ The 'deuce' case should be handled
 After a game has been won, a winner must be determined
 The current score of either player should be available at any point during the game.
 ```
+
+## Authors
+
+* **Israel Llata** - *Initial work @ 20171025* - [PaddleGame](https://github.com/onbrokenwings/PaddleGame)

@@ -23,9 +23,15 @@ namespace PaddleGame
             _games = new List<GameField>();
         }
 
-        public string StartGame(PaddlePlayer pVisiting, PaddlePlayer pHome)
+        /// <summary>
+        /// Start a new game into the tournament
+        /// </summary>
+        /// <param name="pVisitingPlayer">Visiting player</param>
+        /// <param name="pHomePlayer">Home player</param>
+        /// <returns>Game ID which identifies the actual game in the tournament</returns>
+        public string StartGame(PaddlePlayer pVisitingPlayer, PaddlePlayer pHomePlayer)
         {
-            var game = new GameField(pVisiting, pHome);
+            var game = new GameField(pVisitingPlayer, pHomePlayer);
 
             if (!_games.Contains(game))
             {
@@ -37,7 +43,7 @@ namespace PaddleGame
 
                 _games.Add(game);
 
-                Console.WriteLine("New game has started with ID [{0}][{1}][{2}]", game.ID, pVisiting.Licence, pHome.Licence);
+                Console.WriteLine("New game has started with ID [{0}][{1}][{2}]", game.ID, pVisitingPlayer.Licence, pHomePlayer.Licence);
 
                 return game.ID;
             }
@@ -49,6 +55,11 @@ namespace PaddleGame
             }
         }
 
+        /// <summary>
+        /// Action of scoring in a game of the tournament
+        /// </summary>
+        /// <param name="pPlayer">Player who scores</param>
+        /// <param name="pGameID">Game ID which identifies the actual game</param>
         public void SetScore(PaddlePlayer pPlayer, string pGameID)
         {
             try
@@ -81,6 +92,12 @@ namespace PaddleGame
             }
         }
 
+        /// <summary>
+        /// Get the current scoreboard for a game of the tournament
+        /// </summary>
+        /// <param name="pPlayer">Player to get the scoreboard</param>
+        /// <param name="pGameID">Game ID which identifies the actual game</param>
+        /// <returns>The current scoreboard for the game in progress</returns>
         public ScoreBoard GetScore(PaddlePlayer pPlayer, string pGameID)
         {
             var game = GetGame(pGameID);
@@ -114,9 +131,23 @@ namespace PaddleGame
             }
         }
 
+        /// <summary>
+        /// Get the game for a given game ID of the tournament
+        /// </summary>
+        /// <param name="pGameID">Game ID which identifies the actual game</param>
+        /// <returns>The current game set for a given game</returns>
         public GameField GetGame(string pGameID)
         {
-            return _games.FirstOrDefault(a => a.ID.Equals(pGameID));
+            if (_games.Any(a => a.ID.Equals(pGameID)))
+            {
+                return _games.FirstOrDefault(a => a.ID.Equals(pGameID));
+            }
+            else
+            {
+                Console.WriteLine("Game wasn't found for the game ID [{0}]", pGameID);
+
+                return null;
+            }
         }
     }
 }

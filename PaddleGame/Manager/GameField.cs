@@ -7,7 +7,7 @@ namespace PaddleGame
 {
     public class GameField : IEquatable<GameField>
     {
-        private GameSet[] Sets;
+        private GameSet[] _sets;
 
         public string ID { get; private set; }
 
@@ -17,18 +17,27 @@ namespace PaddleGame
 
         public Dictionary<string, int> CurrentScore { get; private set; }
 
-        public GameField(PaddlePlayer pVisiting, PaddlePlayer pHome)
+        /// <summary>
+        /// Creates a gamefield for playing
+        /// </summary>
+        /// <param name="pVisitingPlayer">Visiting player</param>
+        /// <param name="pHomePlayer">Home Player</param>
+        public GameField(PaddlePlayer pVisitingPlayer, PaddlePlayer pHomePlayer)
         {
-            Players = new PaddlePlayer[] { pVisiting, pHome };
+            Players = new PaddlePlayer[] { pVisitingPlayer, pHomePlayer };
 
             CurrentScore = new Dictionary<string, int>();
         }
 
+        /// <summary>
+        /// Start any given game
+        /// </summary>
+        /// <param name="pGameID">Game ID which identifies each game in the tournament</param>
         public void Start(string pGameID)
         {
             ID = pGameID;
 
-            Sets = new GameSet[] 
+            _sets = new GameSet[] 
             { 
                 new GameSet(SetName.Set1, ID, StatusName.Playing), 
                 new GameSet(SetName.Set2, ID),
@@ -38,11 +47,15 @@ namespace PaddleGame
             Console.WriteLine("Game ID [{0}] has been started at [{1}].", ID, DateTime.Now.ToString("HH:mm:ss"));
         }
 
+        /// <summary>
+        /// Action of score for the actual game
+        /// </summary>
+        /// <param name="pPlayer">Player who scores in the game</param>
         public void SetScore(PaddlePlayer pPlayer)
         {
-            //Only score at playing sets.
+            //Only able to score at playing sets.
 
-            foreach (var set in Sets)
+            foreach (var set in _sets)
             {
                 if (set.ScoreStatus == StatusName.Playing || set.ScoreStatus == StatusName.Deuce)
                 {
@@ -56,11 +69,14 @@ namespace PaddleGame
             }
         }
 
+        /// <summary>
+        /// Progression of the game once the score is set
+        /// </summary>
         public void Progress()
         {
             //In case some set is finished or winner has to be accounted on memory.
 
-            Array.ForEach(Sets, set =>
+            Array.ForEach(_sets, set =>
             {
                 if (set.ScoreStatus == StatusName.Finished)
                 {
@@ -75,7 +91,7 @@ namespace PaddleGame
                         CurrentScore.Add(set.Winner.Licence, 1);
                     }
 
-                    //Set is accounted and finally close.
+                    //Set is accounted and finally close to evaluate.
 
                     set.ScoreStatus = StatusName.Close;
 
@@ -93,11 +109,20 @@ namespace PaddleGame
             });
         }
 
+        /// <summary>
+        /// Get the current set which is playing at the moment
+        /// </summary>
+        /// <returns>Get the current set details</returns>
         public GameSet GetCurrentSet()
         {
-            return Sets.FirstOrDefault(a => a.ScoreStatus == StatusName.Playing || a.ScoreStatus == StatusName.Deuce);
+            return _sets.FirstOrDefault(a => a.ScoreStatus == StatusName.Playing || a.ScoreStatus == StatusName.Deuce);
         }
 
+        /// <summary>
+        /// Find given player is visiting or home in the game
+        /// </summary>
+        /// <param name="pPlayer">Player to intent to find</param>
+        /// <returns>Value 0 is visiting and 1 is home</returns>
         public int FindPlayer(PaddlePlayer pPlayer)
         {
             if (Players.Contains(pPlayer))
@@ -130,11 +155,11 @@ namespace PaddleGame
 
         private void StartNextSet()
         {
-            for (int i = 0; i < Sets.Length; i++)
+            for (int i = 0; i < _sets.Length; i++)
             {
-                if (Sets[i].ScoreStatus == StatusName.Scheduled)
+                if (_sets[i].ScoreStatus == StatusName.Scheduled)
                 {
-                    Sets[i].ScoreStatus = StatusName.Playing;
+                    _sets[i].ScoreStatus = StatusName.Playing;
 
                     break;
                 }
